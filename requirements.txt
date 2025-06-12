@@ -1,6 +1,0 @@
-streamlit
-pandas
-python-docx
-PyYAML
-streamlit-authenticator
-python-dotenv
