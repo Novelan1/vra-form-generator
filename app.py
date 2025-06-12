@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+import os
+load_dotenv()
 import streamlit as st
 import pandas as pd
 from docx import Document
@@ -10,18 +13,20 @@ from yaml.loader import SafeLoader
 # === PAGE CONFIG ===
 st.set_page_config(page_title="VRA Form Generator", layout="wide")
 
-# === LOAD AUTHENTICATION ===
+# === LOAD AUTHENTICATION CONFIG ===
 with open('credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
+# === SETUP AUTHENTICATOR ===
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
+    os.getenv("COOKIE_SECRET"),
+    config['cookie']['expiry_days']
 )
 
-name, authentication_status, username = authenticator.login('Login', 'main')
+# === LOGIN ===
+name, authentication_status, username = authenticator.login('Login', location='main')
 
 if authentication_status is False:
     st.error('Username or password is incorrect.')

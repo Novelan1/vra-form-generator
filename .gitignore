@@ -1,0 +1,4 @@
+.env
+credentials.yaml
+__pycache__/
+*.pyc
