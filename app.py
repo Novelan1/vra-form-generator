@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 import os
+
+# Load environment variables
 load_dotenv()
+
 import streamlit as st
 import pandas as pd
 from docx import Document
@@ -14,14 +17,19 @@ from yaml.loader import SafeLoader
 st.set_page_config(page_title="VRA Form Generator", layout="wide")
 
 # === LOAD AUTHENTICATION CONFIG ===
-with open('credentials.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+config = st.secrets
+
+# === FETCH SECRET FROM ENV ===
+cookie_secret = os.getenv("COOKIE_SECRET")
+if not cookie_secret:
+    st.stop()  # Stop if secret is missing
+    raise ValueError("COOKIE_SECRET not found. Please set it in .env or Streamlit secrets.")
 
 # === SETUP AUTHENTICATOR ===
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
-    os.getenv("COOKIE_SECRET"),
+    cookie_secret,
     config['cookie']['expiry_days']
 )
 
